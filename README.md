@@ -3,6 +3,10 @@ It allows to build a firmware for mottramlabs MLP 201077 4 channels current sens
 
 
 **requirements**
+- purchase a [Current Sensor board board](https://www.ebay.co.uk/sch/i.html?_nkw=&_armrs=1&_ipg=&_from=&_ssn=mlabs2018)
+  You can look [here]((https://www.mottramlabs.com/esp_products.html) for more info on available boards.
+  The configuration file provided in this repository is meant to configure 2 of the 4 channels of the MLP201077 board.
+  Of course you can adapt the configuration for your board and used channels.
 - [install esphome](https://esphome.io/guides/installing_esphome.html#)
 - Create a secrets.yaml file with 
 ```yaml
