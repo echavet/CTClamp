@@ -106,7 +106,7 @@ sensor:
     id: ads_4
     update_interval: 1s
 
-
+ 
   ## 15 amp clamp 
   - platform: ct_clamp
     sensor: ads_2
