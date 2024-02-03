@@ -106,7 +106,7 @@ sensor:
     id: ads_4
     update_interval: 1s
 
- 
+
   ## 15 amp clamp 
   - platform: ct_clamp
     sensor: ads_2
@@ -114,15 +114,7 @@ sensor:
     update_interval: 2s    
     accuracy_decimals: 10
     filters:
-      #- multiply: 1000
-      - calibrate_polynomial:
-          degree: 4
-          datapoints:
-            - 0 -> 0
-            - 0.0006 -> 0
-            - 0.0214732761383 -> 3.4
-            - 0.0318451480865 -> 5
-            - 0.0525032920837 -> 8.2
+      - multiply: 1000      
           
 
   ## 100 amp clamp 
@@ -132,11 +124,7 @@ sensor:
     update_interval: 2s
     accuracy_decimals: 10
     filters:
-      #- multiply: 1000
-      - calibrate_linear :
-        - 0 -> 0        
-        - 0.0165476207733 -> 4.687065
-        - 0.0229258308411 -> 6.423819
+      - multiply: 1000      
 
   - platform: template
     name: "Instant Power ${name} 4"
