@@ -25,6 +25,11 @@ esphome wizard my_file.yaml
 
 And the get the encryption key from the generated config file. Leave generated file. You don't need it anymore. Just use the current-sensor.yaml from this repository.
 
+- Then you will have to calibrate your connected sensors
+  With process should be done by reading the raw values from sensors having flashed the raw-current-sensor.yaml file.
+- Then you will have to flash the final firmware with your calibration data.
+
+**Flashing the final firmware with calibrated sensors**
 - Then launch
 ```
 esphome compile current-sensor.yaml
