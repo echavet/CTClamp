@@ -64,6 +64,11 @@ text_sensor:
     reset_reason:
       name: "Reset Reason"
 
+  - platform: homeassistant
+    id: heures_creuses
+    entity_id: schedule.heures_creuses
+    internal : true
+
 i2c:
   sda: GPIO4
   scl: GPIO5
@@ -125,45 +130,3 @@ sensor:
     accuracy_decimals: 10
     filters:
       - multiply: 1000      
-
-  - platform: template
-    name: "Instant Power ${name} 4"
-    id: power_sensor_4
-    unit_of_measurement: 'W'
-    accuracy_decimals: 2
-    # Calcul de la puissance instantanée
-    lambda: |-
-      return id(ads_4).state * 230.0; 
-
-  - platform: total_daily_energy
-    name: "Daily Energy Consumption ${name} 4"
-    power_id: power_sensor_4
-    unit_of_measurement: kWh
-    accuracy_decimals: 2
-    method: trapezoid
-    filters:
-      - multiply: 0.001 # Convertir W en kW
-      
-# To test different gains
-# select:
-#   - platform: template
-#     name: "Gain ads 2"
-#     id: gain_select
-#     #setup_priority : -100.0 ## late
-#     options:
-#       - "6.144"
-#       - "4.096"
-#       - "2.048"
-#       - "1.024"
-#       - "0.512"
-#       - "0.256"
-#     initial_option: "2.048"
-#     optimistic: true
-#     on_value:
-#       - lambda: |-
-#           if (x == "6.144") id(ads_2).set_gain(esphome::ads1115::ADS1115_GAIN_6P144);
-#           else if (x == "4.096") id(ads_2).set_gain(esphome::ads1115::ADS1115_GAIN_4P096);
-#           else if (x == "2.048") id(ads_2).set_gain(esphome::ads1115::ADS1115_GAIN_2P048);
-#           else if (x == "1.024") id(ads_2).set_gain(esphome::ads1115::ADS1115_GAIN_1P024);
-#           else if (x == "0.512") id(ads_2).set_gain(esphome::ads1115::ADS1115_GAIN_0P512);
-#           else if (x == "0.256") id(ads_2).set_gain(esphome::ads1115::ADS1115_GAIN_0P256);
