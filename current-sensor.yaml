@@ -208,23 +208,27 @@ sensor:
     method: trapezoid
     filters:
       - multiply: 0.001 # Convertir W en kW
-
-
-  - platform: total_daily_energy
-    name: "Compteur Jour Heure Creuses"
-    power_id: PW_HC
-    unit_of_measurement: kWh
-    accuracy_decimals: 2
-    method: trapezoid
-    filters:
-      - multiply: 0.001 # Convertir W en kW
-
-  - platform: total_daily_energy
-    name: "Compteur Jour Heure Pleine"
-    power_id: PW_HP
-    unit_of_measurement: kWh
-    accuracy_decimals: 2
-    method: trapezoid
-    filters:
-      - multiply: 0.001 # Convertir W en kW
-
+      
+# To test different gains
+# select:
+#   - platform: template
+#     name: "Gain ads 2"
+#     id: gain_select
+#     #setup_priority : -100.0 ## late
+#     options:
+#       - "6.144"
+#       - "4.096"
+#       - "2.048"
+#       - "1.024"
+#       - "0.512"
+#       - "0.256"
+#     initial_option: "2.048"
+#     optimistic: true
+#     on_value:
+#       - lambda: |-
+#           if (x == "6.144") id(ads_2).set_gain(esphome::ads1115::ADS1115_GAIN_6P144);
+#           else if (x == "4.096") id(ads_2).set_gain(esphome::ads1115::ADS1115_GAIN_4P096);
+#           else if (x == "2.048") id(ads_2).set_gain(esphome::ads1115::ADS1115_GAIN_2P048);
+#           else if (x == "1.024") id(ads_2).set_gain(esphome::ads1115::ADS1115_GAIN_1P024);
+#           else if (x == "0.512") id(ads_2).set_gain(esphome::ads1115::ADS1115_GAIN_0P512);
+#           else if (x == "0.256") id(ads_2).set_gain(esphome::ads1115::ADS1115_GAIN_0P256);

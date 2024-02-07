@@ -27,8 +27,10 @@ esphome wizard my_file.yaml
 
 And the get the encryption key from the generated config file. Leave generated file. You don't need it anymore. Just use the current-sensor.yaml from this repository.
 
-- Then you will have to calibrate your connected sensors
-  With process should be done by reading the raw values from sensors having flashed the raw-current-sensor.yaml file.
+- Then you will have to calibrate your connected sensors.
+  This process should be done by reading the raw values from sensors having flashed the raw-current-sensor.yaml file. Procedure is the same for the final firmware.
+  Just replace the current-sensor.yaml by raw-current-sensor.yaml.
+  Then in homeassistant note the values for the sensor named sensor.current_sensor_current_sensor_n. Replace the n with the number 1-4 sensor you want to calibrate.
 - Then you will have to flash the final firmware with your calibration data.
 
 **Flashing the final firmware with calibrated sensors**
