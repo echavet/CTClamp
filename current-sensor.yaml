@@ -1,6 +1,6 @@
 substitutions:
   name: "current-sensor"
-  friendly_name: Capteur De Courant
+  friendly_name: Capteur De Courant  
 
 esphome:
   name: ${name}
@@ -118,16 +118,15 @@ sensor:
   ## 15 amp clamp 
   - platform: ct_clamp
     sensor: ads_2
-    name: ${name} 2
+    name: Intensité Chauffe-eau
+    id: amperes_sensor_2
     update_interval: 2s    
     accuracy_decimals: 10
     filters:
       #- multiply: 1000
-      - calibrate_polynomial:
-          degree: 4
-          datapoints:
-            - 0 -> 0
-            - 0.0006 -> 0
+      - calibrate_linear :                    
+            #- 0 -> 0
+            #- 0.0006 -> 0
             - 0.0214732761383 -> 3.4
             - 0.0318451480865 -> 5
             - 0.0525032920837 -> 8.2
@@ -137,7 +136,7 @@ sensor:
   - platform: ct_clamp
     sensor: ads_4
     id: amperes_sensor_4
-    name: ${name} 4
+    name: Intensité Générale
     update_interval: 2s
     accuracy_decimals: 10
     filters:
@@ -148,13 +147,22 @@ sensor:
         - 0.0229258308411 -> 6.423819
 
   - platform: template
+    name: "Puissance Instantanée Chauffe-eau"
+    id: power_sensor_2
+    unit_of_measurement: 'W'
+    accuracy_decimals: 2
+    # Calcul de la puissance instantanée
+    lambda: |-
+      return id(amperes_sensor_2).state * 236.0;
+      
+  - platform: template
     name: "Instant Power ${name} 4"
     id: power_sensor_4
     unit_of_measurement: 'W'
     accuracy_decimals: 2
     # Calcul de la puissance instantanée
     lambda: |-
-      return id(amperes_sensor_4).state * 230.0; 
+      return id(amperes_sensor_4).state * 236.0; 
 
   - platform: template
     name: "Puissance Instantanee HC ${name}"
@@ -164,7 +172,7 @@ sensor:
     # Calcul de la puissance instantanée
     lambda: |-
       if (id(heures_creuses).state) {
-        return id(amperes_sensor_4).state * 230.0;
+        return id(amperes_sensor_4).state * 236.0;
       } else {
         return 0.0;
       }
@@ -179,10 +187,18 @@ sensor:
       if (id(heures_creuses).state) {
         return 0.0;
       } else {
-        return id(amperes_sensor_4).state * 230.0;
+        return id(amperes_sensor_4).state * 236.0;
       }
 
 
+  - platform: total_daily_energy
+    name: "Consommation Journalière Chauffe-eau"
+    power_id: power_sensor_2
+    unit_of_measurement: kWh
+    accuracy_decimals: 2
+    method: trapezoid
+    filters:
+      - multiply: 0.001 # Convertir W en kW
 
   - platform: total_daily_energy
     name: "Daily Energy Consumption ${name} 4"
