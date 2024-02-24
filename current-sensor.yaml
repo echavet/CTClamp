@@ -100,19 +100,21 @@ sensor:
 
   - platform: ads1115
     multiplexer: "A1_GND"
+    internal: true
     gain: 2.048
     name: "ADS1115 Channel A1-GND"
     id: ads_2
-    update_interval: 1s
+    update_interval: 200ms
     accuracy_decimals: 10
 
 
   - platform: ads1115
     multiplexer: "A3_GND"
+    internal: true
     gain: 2.048
     name: "ADS1115 Channel A3-GND"
     id: ads_4
-    update_interval: 1s
+    update_interval: 200ms
 
  
   ## 15 amp clamp 
@@ -148,9 +150,13 @@ sensor:
     sensor: ads_4
     id: amperes_sensor_4
     name: Intensité Générale
-    update_interval: 2s
+    update_interval: 200ms
     accuracy_decimals: 10
     filters:
+      - sliding_window_moving_average:
+          window_size: 10  # Nombre de mesures dans la fenêtre (10 mesures sur 2 secondes à 200 ms par mesure)
+          send_every: 10   # Envoyer la moyenne après 10 mesures
+          send_first_at: 10
       #- multiply: 1000
       - calibrate_linear :
         - 0 -> 0        
@@ -219,27 +225,3 @@ sensor:
     method: trapezoid
     filters:
       - multiply: 0.001 # Convertir W en kW
-      
-# To test different gains
-# select:
-#   - platform: template
-#     name: "Gain ads 2"
-#     id: gain_select
-#     #setup_priority : -100.0 ## late
-#     options:
-#       - "6.144"
-#       - "4.096"
-#       - "2.048"
-#       - "1.024"
-#       - "0.512"
-#       - "0.256"
-#     initial_option: "2.048"
-#     optimistic: true
-#     on_value:
-#       - lambda: |-
-#           if (x == "6.144") id(ads_2).set_gain(esphome::ads1115::ADS1115_GAIN_6P144);
-#           else if (x == "4.096") id(ads_2).set_gain(esphome::ads1115::ADS1115_GAIN_4P096);
-#           else if (x == "2.048") id(ads_2).set_gain(esphome::ads1115::ADS1115_GAIN_2P048);
-#           else if (x == "1.024") id(ads_2).set_gain(esphome::ads1115::ADS1115_GAIN_1P024);
-#           else if (x == "0.512") id(ads_2).set_gain(esphome::ads1115::ADS1115_GAIN_0P512);
-#           else if (x == "0.256") id(ads_2).set_gain(esphome::ads1115::ADS1115_GAIN_0P256);
