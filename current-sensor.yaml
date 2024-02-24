@@ -11,11 +11,11 @@ esp8266:
 
 logger:
   hardware_uart: UART0
-  level: DEBUG
-  logs:
-    sensor: DEBUG
-    ads1115: DEBUG
-    ct_clamp: DEBUG
+  level: WARN
+  # logs:
+  #   sensor: DEBUG
+  #   ads1115: DEBUG
+  #   ct_clamp: DEBUG
 
 wifi:
   networks:
@@ -104,8 +104,13 @@ sensor:
     gain: 2.048
     name: "ADS1115 Channel A1-GND"
     id: ads_2
-    update_interval: 200ms
+    update_interval: 100ms
     accuracy_decimals: 10
+    filters:
+      - sliding_window_moving_average:
+          window_size: 10  # Nombre de mesures dans la fenêtre (10 mesures sur 2 secondes à 200 ms par mesure)
+          send_every: 10   # Envoyer la moyenne après 10 mesures
+          send_first_at: 10
 
 
   - platform: ads1115
@@ -114,7 +119,14 @@ sensor:
     gain: 2.048
     name: "ADS1115 Channel A3-GND"
     id: ads_4
-    update_interval: 200ms
+    update_interval: 100ms
+    accuracy_decimals: 10
+    filters:
+      - sliding_window_moving_average:
+          window_size: 10  # Nombre de mesures dans la fenêtre (10 mesures sur 2 secondes à 200 ms par mesure)
+          send_every: 10   # Envoyer la moyenne après 10 mesures
+          send_first_at: 10
+
 
  
   ## 15 amp clamp 
@@ -122,17 +134,11 @@ sensor:
     sensor: ads_2
     name: Intensité Chauffe-eau
     id: amperes_sensor_2
-    update_interval: 200ms    
+    update_interval: 1s    
     accuracy_decimals: 10
     filters:
       #- multiply: 1000
-      #- calibrate_linear :                   
-
-      - sliding_window_moving_average:
-          window_size: 10  # Nombre de mesures dans la fenêtre (10 mesures sur 2 secondes à 200 ms par mesure)
-          send_every: 10   # Envoyer la moyenne après 10 mesures
-          send_first_at: 10
-
+      #- calibrate_linear :                         
       - calibrate_polynomial:
           degree: 3
           datapoints:
@@ -150,13 +156,9 @@ sensor:
     sensor: ads_4
     id: amperes_sensor_4
     name: Intensité Générale
-    update_interval: 200ms
+    update_interval: 1s
     accuracy_decimals: 10
-    filters:
-      - sliding_window_moving_average:
-          window_size: 10  # Nombre de mesures dans la fenêtre (10 mesures sur 2 secondes à 200 ms par mesure)
-          send_every: 10   # Envoyer la moyenne après 10 mesures
-          send_first_at: 10
+    filters:      
       #- multiply: 1000
       - calibrate_linear :
         - 0 -> 0        
@@ -173,7 +175,7 @@ sensor:
       return id(amperes_sensor_2).state * 236.0;
       
   - platform: template
-    name: "Instant Power ${name} 4"
+    name: "Puissance Instantanée Générale"
     id: power_sensor_4
     unit_of_measurement: 'W'
     accuracy_decimals: 2
