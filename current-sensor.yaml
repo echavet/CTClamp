@@ -120,17 +120,28 @@ sensor:
     sensor: ads_2
     name: Intensité Chauffe-eau
     id: amperes_sensor_2
-    update_interval: 2s    
+    update_interval: 200ms    
     accuracy_decimals: 10
     filters:
       #- multiply: 1000
-      - calibrate_linear :                    
-            #- 0 -> 0
-            #- 0.0006 -> 0
+      #- calibrate_linear :                   
+
+      - sliding_window_moving_average:
+          window_size: 10  # Nombre de mesures dans la fenêtre (10 mesures sur 2 secondes à 200 ms par mesure)
+          send_every: 10   # Envoyer la moyenne après 10 mesures
+          send_first_at: 10
+
+      - calibrate_polynomial:
+          degree: 3
+          datapoints:
+            - 0.0006 -> 0
             - 0.0214732761383 -> 3.4
             - 0.0318451480865 -> 5
             - 0.0525032920837 -> 8.2
-          
+      - lambda: |-
+          if (x < 0) return 0;
+          return x;
+
 
   ## 100 amp clamp 
   - platform: ct_clamp
