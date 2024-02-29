@@ -184,11 +184,10 @@ sensor:
       return id(amperes_sensor_4).state * 236.0; 
 
   - platform: template
-    name: "Puissance Instantanee HC ${name}"
-    id: PW_HC
-    unit_of_measurement: 'W'
-    accuracy_decimals: 2
-    # Calcul de la puissance instantanée
+    name: "Watts heures Creuses"
+    id: WHC    
+    unit_of_measurement: 'W'    
+    accuracy_decimals: 2     
     lambda: |-
       if (id(heures_creuses).state) {
         return id(amperes_sensor_4).state * 236.0;
@@ -197,18 +196,33 @@ sensor:
       }
 
   - platform: template
-    name: "Puissance Instantanee HP ${name}"
-    id: PW_HP
-    unit_of_measurement: 'W'
+    name: "Watts heures Pleines"
+    id: WHP 
+    unit_of_measurement: 'W'           
     accuracy_decimals: 2
-    # Calcul de la puissance instantanée 
     lambda: |-
-      if (id(heures_creuses).state) {
-        return 0.0;
-      } else {
+      if (!id(heures_creuses).state) {
         return id(amperes_sensor_4).state * 236.0;
+      } else {
+        return 0.0;
       }
+  - platform: total_daily_energy
+    name: "Consommation Journalière Heures Creuses"
+    power_id: WHC
+    unit_of_measurement: kWh
+    accuracy_decimals: 2
+    method: trapezoid
+    filters:
+      - multiply: 0.001 # Convertir W en kW
 
+  - platform: total_daily_energy
+    name: "Consommation Journalière Heures Pleines"
+    power_id: WHP
+    unit_of_measurement: kWh
+    accuracy_decimals: 2
+    method: trapezoid
+    filters:
+      - multiply: 0.001 # Convertir W en kW
 
   - platform: total_daily_energy
     name: "Consommation Journalière Chauffe-eau"
